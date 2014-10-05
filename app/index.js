@@ -64,6 +64,11 @@ Generator.prototype.askFor = function askFor() {
     message: 'Would you like to include Baucis for REST?'
   },
   {
+    type: 'confirm',
+    name: 'useCoffee',
+    message: 'Would you like to use coffeescript?'
+  },
+  {
     type: 'string',
     name: 'bowerDirectory',
     message: 'Where do you want the Bower components installed?',
@@ -78,6 +83,7 @@ Generator.prototype.askFor = function askFor() {
     this.useSocketIO = props.useSocketIO;
     this.useBaucis = props.useBaucis;
     this.bowerDirectory = props.bowerDirectory;
+    this.useCoffee = props.useCoffee;
 
     //dummy vars for legacy
     this.compassBootstrap = true;
@@ -154,13 +160,23 @@ Generator.prototype.setupEnv = function setupEnv() {
   //html
   this.template( 'app/index.html', _rootDir + 'index.html' );
 
-  // js
   this.mkdir( _rootDir + 'scripts' );
-  this.copy( 'app/main.js', _rootDir + 'scripts/main.js' );
-  this.template( 'app/init.js', _rootDir + 'scripts/init.js' );
-  this.copy( 'app/regionManager.js', _rootDir + 'scripts/regionManager.js' );
-  this.copy( 'app/application.js', _rootDir + 'scripts/application.js' );
-  this.copy( 'app/communicator.js', _rootDir + 'scripts/communicator.js' );
+
+  // coffee
+  if ( this.useCoffee ) {
+    this.copy( 'app/main.coffee', _rootDir + 'scripts/main.coffee' );
+    this.template( 'app/init.coffee', _rootDir + 'scripts/init.coffee' );
+    this.copy( 'app/regionManager.coffee', _rootDir + 'scripts/regionManager.coffee' );
+    this.copy( 'app/application.coffee', _rootDir + 'scripts/application.coffee' );
+    this.copy( 'app/communicator.coffee', _rootDir + 'scripts/communicator.coffee' );
+  } else {
+    this.copy( 'app/main.js', _rootDir + 'scripts/main.js' );
+    this.template( 'app/init.js', _rootDir + 'scripts/init.js' );
+    this.copy( 'app/regionManager.js', _rootDir + 'scripts/regionManager.js' );
+    this.copy( 'app/application.js', _rootDir + 'scripts/application.js' );
+    this.copy( 'app/communicator.js', _rootDir + 'scripts/communicator.js' );
+  }
+
 
   // other
   if( this.isFullApp ) {

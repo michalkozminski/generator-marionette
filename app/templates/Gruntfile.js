@@ -152,13 +152,27 @@ module.exports = function (grunt) {
         },
         <%}%>
 
+        <% if(useCoffee){ %>
+        //coffee
+        coffee: {
+            compile: {
+                cwd: 'app/scripts',
+                expand: true,
+                src: ['**/*.coffee'],
+                dest: '.tmp/scripts/',
+                ext: '.js'
+            }
+        },
+        <% } %>
+
         // require
         requirejs: {
             dist: {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
                 options: {
                     // `name` and `out` is set by grunt-usemin
-                    baseUrl: 'app/scripts',
+                    <% if(useCoffee){ %>baseUrl: '.tmp/scripts',<% } else { %>
+                    baseUrl: 'app/scripts',<% } %>
                     optimize: 'none',
                     paths: {
                         'templates': '../../.tmp/scripts/templates'
@@ -263,7 +277,7 @@ module.exports = function (grunt) {
 
         bower: {
             all: {
-                rjsConfig: '<%%= yeoman.app %>/scripts/main.js'
+                rjsConfig: '.tmp/scripts/main.js'
             }
         },
 
@@ -297,6 +311,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            <% if(useCoffee){ %>'coffee',<%}%>
             <% if(isFullApp){ %>'compass:server',<%}%>
             'connect:testserver',
             <% if(isFullApp){ %>'express:dev',<%}%>
